@@ -1,11 +1,11 @@
-package model.builder;
+package org.example.model.builder;
 
-import model.Book;
+import org.example.model.Book;
 
 import java.util.Date;
 
 public class BookBuilder {
-    private Book book;
+    private Book book = new Book();
 /**
     public BookBuilder(){
         book = new Book();
@@ -34,8 +34,4 @@ public class BookBuilder {
     public Book build(){
         return book;
     }
-
-
-
-
 }

@@ -1,6 +1,6 @@
-package repository;
+package org.example.repository;
 
-import model.Book;
+import org.example.model.Book;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
-import model.Book;
-import model.builder.BookBuilder;
+package org.example;
+
+import org.example.model.Book;
+import org.example.model.builder.BookBuilder;
 
 import java.util.Date;
 

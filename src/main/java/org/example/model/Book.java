@@ -1,4 +1,4 @@
-package model;
+package org.example.model;
 
 import java.util.Date;
 
@@ -45,5 +45,15 @@ public class Book {
 
     public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", publishedDate=" + publishedDate +
+                '}';
     }
 }
