@@ -115,10 +115,7 @@ public class BookRepositoryMySQL implements BookRepository {
 
         try{
             Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery(sql);
-
-
+            statement.execute(sql);
         } catch (SQLException e){
             e.printStackTrace();
         }

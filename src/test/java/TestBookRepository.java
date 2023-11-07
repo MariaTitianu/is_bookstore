@@ -56,7 +56,7 @@ public class TestBookRepository {
     }
 
     @ParameterizedTest
-    @MethodSource("findAllArg")
+    @MethodSource("removeAllArg")
     public void test_findAll(List<Book> expected) {
         BookRepositoryMySQL b = new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection());
         Assertions.assertArrayEquals(expected.toArray(), b.findAll().toArray());
