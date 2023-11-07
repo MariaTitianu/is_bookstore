@@ -10,8 +10,8 @@ import java.util.Optional;
 public class BookRepositoryMock implements BookRepository{
     private List<Book> books;
 
-    public BookRepositoryMock(){
-        books = new ArrayList<>();
+    public BookRepositoryMock(List<Book> test_library){
+        books = test_library;
     }
 
     @Override

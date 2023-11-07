@@ -1,6 +1,7 @@
 import org.example.database.JDBConnectionWrapper;
 import org.example.model.Book;
 import org.example.model.builder.BookBuilder;
+import org.example.repository.BookRepositoryMock;
 import org.example.repository.BookRepositoryMySQL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,5 +69,21 @@ public class TestBookRepository {
         b.removeAll();
         Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), b.findAll().toArray());
     }
+    @ParameterizedTest
+    @MethodSource("findAllArg")
+    public void test_findAllMock(List<Book> expected) {
+        BookRepositoryMock b = new BookRepositoryMock(new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection()).findAll());
+        b.findAll();
+        Assertions.assertArrayEquals(expected.toArray(), b.findAll().toArray());
+    }
+    @ParameterizedTest
+    @MethodSource("findAllArg")
+    public void test_removeallMock() {
+        BookRepositoryMock b = new BookRepositoryMock(new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection()).findAll());
+        b.removeAll();
+        Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), b.findAll().toArray());
+    }
+
+
 
 }

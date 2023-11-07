@@ -16,9 +16,6 @@ public class Main {
         System.out.println("Hello world!");
 
         JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper("test_library");
-
-
-
         BookRepository bookRepository = new BookRepositoryMySQL(connectionWrapper.getConnection());
 
         Book book = new BookBuilder()
