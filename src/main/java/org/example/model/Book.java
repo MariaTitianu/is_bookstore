@@ -1,6 +1,7 @@
 package org.example.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 // Java Bean
 // POJO - Plain Old Java Object - nu extinde nicio clasă, nu implemnetează nicio interfață și nu are nicio adnotare
@@ -55,5 +56,17 @@ public class Book {
                 ", title='" + title + '\'' +
                 ", publishedDate=" + publishedDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+        return author.equals(book.author) && title.equals(book.title) && publishedDate.equals(book.publishedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, title, publishedDate);
     }
 }

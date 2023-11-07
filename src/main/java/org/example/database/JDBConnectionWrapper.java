@@ -10,7 +10,7 @@ public class JDBConnectionWrapper {
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost/"; //localhost -> 127.0.0.1
     private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "30Aprilie2002";
     private static final int TIMEOUT = 5;
 
 
@@ -36,6 +36,7 @@ public class JDBConnectionWrapper {
     }
 
     private void createTable() throws SQLException {
+
         Statement statement = connection.createStatement();
 
         String sql = "CREATE TABLE IF NOT EXISTS book(" +
