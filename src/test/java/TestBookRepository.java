@@ -1,7 +1,8 @@
+import org.example.database.DatabaseConnectionFactory;
 import org.example.database.JDBConnectionWrapper;
 import org.example.model.Book;
 import org.example.model.builder.BookBuilder;
-import org.example.repository.BookRepositoryMock;
+import org.example.repository.BookRepository;
 import org.example.repository.BookRepositoryMySQL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
@@ -16,10 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestBookRepository {
+    BookRepository bookRepository;
     @BeforeEach
     public void reinit() {
-        JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper("test_library");
-
+        DatabaseConnectionFactory databaseConnectionFactory = new DatabaseConnectionFactory();
+        bookRepository = new BookRepositoryMySQL((Connection) databaseConnectionFactory.getConnectionWrapper(true));
 
         String sql = "DROP DATABASE IF EXISTS test_library;" +
                 "CREATE DATABASE test_library;" +
@@ -33,7 +36,7 @@ public class TestBookRepository {
                 "INSERT INTO book VALUES(null, 'Maria', 'Galbeneaua', '2022-3-3');" +
                 "INSERT INTO book VALUES(null, 'Codrin', 'A little ship', '2022-4-4');";
         try {
-            Statement statement = connectionWrapper.getConnection().createStatement();
+            Statement statement =  ((Connection)databaseConnectionFactory.getConnectionWrapper(true)).createStatement();
             statement.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,29 +62,25 @@ public class TestBookRepository {
     @ParameterizedTest
     @MethodSource("removeAllArg")
     public void test_findAll(List<Book> expected) {
-        BookRepositoryMySQL b = new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection());
-        Assertions.assertArrayEquals(expected.toArray(), b.findAll().toArray());
+        Assertions.assertArrayEquals(expected.toArray(), bookRepository.findAll().toArray());
     }
     @ParameterizedTest
     @MethodSource("findAllArg")
     public void test_removeall() {
-        BookRepositoryMySQL b = new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection());
-        b.removeAll();
-        Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), b.findAll().toArray());
+        bookRepository.removeAll();
+        Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), bookRepository.findAll().toArray());
     }
     @ParameterizedTest
     @MethodSource("findAllArg")
     public void test_findAllMock(List<Book> expected) {
-        BookRepositoryMock b = new BookRepositoryMock(new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection()).findAll());
-        b.findAll();
-        Assertions.assertArrayEquals(expected.toArray(), b.findAll().toArray());
+        bookRepository.findAll();
+        Assertions.assertArrayEquals(expected.toArray(), bookRepository.findAll().toArray());
     }
     @ParameterizedTest
     @MethodSource("findAllArg")
     public void test_removeallMock() {
-        BookRepositoryMock b = new BookRepositoryMock(new BookRepositoryMySQL(new JDBConnectionWrapper("test_library").getConnection()).findAll());
-        b.removeAll();
-        Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), b.findAll().toArray());
+        bookRepository.removeAll();
+        Assertions.assertArrayEquals(new ArrayList<Book>().toArray(), bookRepository.findAll().toArray());
     }
 
 

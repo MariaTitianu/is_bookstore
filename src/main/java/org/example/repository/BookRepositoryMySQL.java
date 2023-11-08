@@ -40,7 +40,7 @@ public class BookRepositoryMySQL implements BookRepository {
     @Override
     public Optional<Book> findById(Long id) {
         String sql = "SELECT * FROM book WHERE id = ?";
-
+        Optional<Book> optionalBook = Optional.empty();
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
@@ -51,13 +51,13 @@ public class BookRepositoryMySQL implements BookRepository {
 
 
             if (resultSet.next()){
-                return Optional.of(getBookFromResultSet(resultSet));
+                optionalBook.of(getBookFromResultSet(resultSet));
             }
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return Optional.empty();
+        return optionalBook;
     }
 
     /**
@@ -111,7 +111,7 @@ public class BookRepositoryMySQL implements BookRepository {
 
     @Override
     public void removeAll() {
-        String sql = "DELETE FROM book;";
+        String sql = "TRUNCATE book;";
 
         try{
             Statement statement = connection.createStatement();
