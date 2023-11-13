@@ -1,19 +1,19 @@
 package org.example.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 // Java Bean
 // POJO - Plain Old Java Object - nu extinde nicio clasă, nu implemnetează nicio interfață și nu are nicio adnotare
 
 public class Book {
 
-    private Long id;
+    protected Long id;
 
-    private String author;
+    protected String author;
 
-    private String title;
+    protected String title;
 
-    private Date publishedDate;
+    protected LocalDate publishedDate;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class Book {
         this.title = title;
     }
 
-    public Date getPublishedDate() {
+    public LocalDate getPublishedDate() {
         return publishedDate;
     }
 
-    public void setPublishedDate(Date publishedDate) {
+    public void setPublishedDate(LocalDate publishedDate) {
         this.publishedDate = publishedDate;
     }
 
