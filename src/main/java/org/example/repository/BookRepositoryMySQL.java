@@ -121,7 +121,6 @@ public class BookRepositoryMySQL implements BookRepository {
         return ebooks;
     }
 
-    //todo: findAll +fiecare baza de date
 
     @Override
     public Optional<Book> findById(Long id) {

@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group 'org.example'
@@ -13,8 +15,19 @@ dependencies {
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
 }
 
+javafx {
+
+    version = '21.0.1'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
 test {
     useJUnitPlatform()
 }
+mainClassName = 'Main'
+
+
+
+
