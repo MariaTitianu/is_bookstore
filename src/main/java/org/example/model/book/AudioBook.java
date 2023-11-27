@@ -1,8 +1,10 @@
-package org.example.model;
+package org.example.model.book;
+
+import org.example.model.book.Book;
 
 import java.util.Objects;
 
-public class AudioBook extends Book{
+public class AudioBook extends Book {
     private Long runtime;
 
     public Long getRuntime() {

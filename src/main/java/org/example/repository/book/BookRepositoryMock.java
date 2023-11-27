@@ -1,14 +1,13 @@
-package org.example.repository;
+package org.example.repository.book;
 
 
-import org.example.model.AudioBook;
-import org.example.model.Book;
-import org.example.model.EBook;
+import org.example.model.book.Book;
+import org.example.model.validator.Notification;
 
 import java.util.List;
 import java.util.Optional;
 
-public class BookRepositoryMock implements BookRepository{
+public class BookRepositoryMock implements BookRepository {
     private List<Book> books;
 
     public BookRepositoryMock(List<Book> test_library){
@@ -18,16 +17,6 @@ public class BookRepositoryMock implements BookRepository{
     @Override
     public List<Book> findAll() {
         return books;
-    }
-
-    @Override
-    public List<AudioBook> findAllAudioBook() {
-        return null;
-    }
-
-    @Override
-    public List<EBook> findAllEBook() {
-        return null;
     }
 
     @Override
@@ -45,5 +34,10 @@ public class BookRepositoryMock implements BookRepository{
     @Override
     public void removeAll() {
         books.clear();
+    }
+
+    @Override
+    public Notification<Book> updateBook(Book book) {
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package org.example.model.builder;
 
-import org.example.model.Book;
+import org.example.model.book.Book;
 
 import java.time.LocalDate;
 
@@ -13,6 +13,11 @@ public class BookBuilder {
 */
     public BookBuilder setId(Long id){
         book.setId(id);
+        return this;
+    }
+
+    public BookBuilder setQuantity(Integer quantity){
+        book.setQuantity(quantity);
         return this;
     }
 

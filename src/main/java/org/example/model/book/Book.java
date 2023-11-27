@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.model.book;
 
 import java.time.LocalDate;
 
@@ -14,6 +14,15 @@ public class Book {
     protected String title;
 
     protected LocalDate publishedDate;
+    protected Integer quantity;
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 
     public Long getId() {
         return id;
@@ -54,6 +63,7 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", title='" + title + '\'' +
                 ", publishedDate=" + publishedDate +
+                ", quantity=" + quantity +
                 '}';
     }
 }

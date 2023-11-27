@@ -1,6 +1,6 @@
 package org.example.model.builder;
 
-import org.example.model.EBook;
+import org.example.model.book.EBook;
 
 import java.time.LocalDate;
 

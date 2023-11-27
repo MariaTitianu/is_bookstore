@@ -43,6 +43,10 @@ public class Bootstrap {
                     "DROP TABLE `right`;",
                     "TRUNCATE `user_role`;",
                     "DROP TABLE `user_role`;",
+//                    "TRUNCATE `audiobook`;",
+//                    "DROP TABLE `audiobook`;",
+//                    "TRUNCATE `ebook`;",
+//                    "DROP TABLE `ebook`;",
                     "TRUNCATE `role`;",
                     "DROP TABLE  `book`, `role`, `user`;"
             };
@@ -66,8 +70,7 @@ public class Bootstrap {
             System.out.println("Bootstrapping " + schema + " schema");
 
 
-            JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper(schema);
-            Connection connection = connectionWrapper.getConnection();
+            Connection connection = new JDBConnectionWrapper(schema).getConnection();
 
             Statement statement = connection.createStatement();
 
@@ -76,7 +79,6 @@ public class Bootstrap {
                 statement.execute(createTableSQL);
             }
         }
-
         System.out.println("Done table bootstrap");
     }
 

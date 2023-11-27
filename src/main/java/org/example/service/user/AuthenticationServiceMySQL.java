@@ -3,6 +3,8 @@ package org.example.service.user;
 import org.example.model.Role;
 import org.example.model.User;
 import org.example.model.builder.UserBuilder;
+import org.example.model.validator.Notification;
+import org.example.model.validator.UserValidator;
 import org.example.repository.security.RightsRolesRepository;
 import org.example.repository.user.UserRepository;
 
@@ -23,23 +25,34 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
-    public boolean register(String username, String password) {
-        String encodedPassword = hashPassword(password);
-        //Criptare  messaj -> dasjdaskdasjdasjk -> messaj
-        //Hashing parolasimpla2023! -> ajdsahduyadgasdashfaj8h8hbh
+    public Notification<Boolean> register(String username, String password) {
+
         Role customerRole = rightsRolesRepository.findRoleByTitle(CUSTOMER);
 
         User user = new UserBuilder()
                 .setUsername(username)
-                .setPassword(encodedPassword)
+                .setPassword(password)
                 .setRoles(Collections.singletonList(customerRole))
                 .build();
 
-        return userRepository.save(user);
+        UserValidator userValidator = new UserValidator(user);
+
+        boolean userValid = userValidator.validate();
+        Notification<Boolean> userRegisterNotification = new Notification<>();
+
+        if (!userValid){
+            userValidator.getErrors().forEach(userRegisterNotification::addError);
+            userRegisterNotification.setResult(Boolean.FALSE);
+        } else {
+            user.setPassword(hashPassword(password));
+            userRegisterNotification.setResult(userRepository.save(user));
+        }
+
+        return userRegisterNotification;
     }
 
     @Override
-    public User login(String username, String password) {
+    public Notification<User> login(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, hashPassword(password));
     }
 
@@ -69,4 +82,3 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
         }
     }
 }
-

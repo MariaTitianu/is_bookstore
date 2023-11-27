@@ -1,14 +1,5 @@
-DROP DATABASE IF EXISTS test_library;
-CREATE DATABASE test_library;
 USE test_library;
 
-CREATE TABLE Book
-(
-    id            BIGINT auto_increment not null unique primary key,
-    author        varchar(50)           not null,
-    title         varchar(50)           not null,
-    publishedDate Date                  not null
-);
 CREATE TABLE AudioBook
 (
     book_id BIGINT PRIMARY KEY unique not null,
@@ -23,12 +14,12 @@ CREATE TABLE Ebook
 );
 
 -- Insert data into Book table
-INSERT INTO Book (author, title, publishedDate)
-VALUES ('Author1', 'Book1', '2022-01-01'),
-       ('Author2', 'Book2', '2022-02-15'),
-       ('Author3', 'Book3', '2022-03-20'),
-       ('Author4', 'Book4', '2022-04-10'),
-       ('Author5', 'Book5', '2022-05-25');
+INSERT INTO Book (author, title, publishedDate, quantity)
+VALUES ('Author1', 'Book1', '2022-01-01', 8912),
+       ('Author2', 'Book2', '2022-02-15', 6969),
+       ('Author3', 'Book3', '2022-03-20', 3),
+       ('Author4', 'Book4', '2022-04-10', 80085),
+       ('Author5', 'Book5', '2022-05-25', 1);
 
 
 -- Insert data into AudioBook table
@@ -41,4 +32,3 @@ VALUES (1, 3600), -- 1 hour
 INSERT INTO Ebook (book_id, document_type)
 VALUES (3, 'PDF'),
        (4, 'EPUB');
-

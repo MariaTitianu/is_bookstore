@@ -1,6 +1,6 @@
 package org.example.model.builder;
 
-import org.example.model.AudioBook;
+import org.example.model.book.AudioBook;
 
 import java.time.LocalDate;
 

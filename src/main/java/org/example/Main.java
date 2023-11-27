@@ -1,42 +1,41 @@
 package org.example;
 
-import org.example.database.DatabaseConnectionFactory;
-import org.example.model.Book;
-import org.example.model.builder.BookBuilder;
-import org.example.repository.BookRepository;
-import org.example.repository.BookRepositoryCacheDecorator;
-import org.example.repository.BookRepositoryMySQL;
-import org.example.repository.Cache;
-import org.example.service.BookService;
-import org.example.service.BookServiceImpl;
+import org.example.controller.LoginController;
+import org.example.database.JDBConnectionWrapper;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import org.example.model.validator.UserValidator;
+import org.example.repository.security.RightsRolesRepository;
+import org.example.repository.security.RightsRolesRepositoryMySQL;
+import org.example.repository.user.UserRepository;
+import org.example.repository.user.UserRepositoryMySQL;
+import org.example.service.user.AuthenticationService;
+import org.example.service.user.AuthenticationServiceMySQL;
+import org.example.view.LoginView;
 
-import java.time.LocalDate;
+import java.sql.Connection;
 
-public class Main {
+import static org.example.database.Constants.Schemas.PRODUCTION;
 
+public class Main extends Application {
     public static void main(String[] args){
-        BookRepository bookRepository = new BookRepositoryCacheDecorator(
-                new BookRepositoryMySQL(DatabaseConnectionFactory.getConnectionWrapper(true).getConnection()),
-                new Cache<>(),new Cache<>(),new Cache<>()
-        );
+        launch(args);
+    }
 
-        BookService bookService = new BookServiceImpl(bookRepository);
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        final Connection connection = new JDBConnectionWrapper(PRODUCTION).getConnection();
 
-        Book book = new BookBuilder()
-                .setAuthor("Cezar Petrescu")
-                .setTitle("Fram Ursul Polar")
-                .setPublishedDate(LocalDate.of(2010, 6, 2))
-                .build();
+        final RightsRolesRepository rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
+        final UserRepository userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
 
-        bookService.save(book);
+        final AuthenticationService authenticationService = new AuthenticationServiceMySQL(userRepository,
+                rightsRolesRepository);
 
-        System.out.println(bookService.findAll());
-        System.out.println(bookService.findAllAudioBook());
-        System.out.println(bookService.findAllEBook());
-        System.out.println(bookService.findAll());
-        System.out.println(bookService.findAllAudioBook());
-        System.out.println(bookService.findAllEBook());
-//        System.out.println(bookService.getAgeOfBook(1L));
+        final LoginView loginView = new LoginView(primaryStage);
 
+        final UserValidator userValidator = new UserValidator(userRepository);
+
+        new LoginController(loginView, authenticationService);
     }
 }
