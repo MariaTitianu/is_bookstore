@@ -32,3 +32,4 @@ VALUES (1, 3600), -- 1 hour
 INSERT INTO Ebook (book_id, document_type)
 VALUES (3, 'PDF'),
        (4, 'EPUB');
+

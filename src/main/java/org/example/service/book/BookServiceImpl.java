@@ -1,9 +1,13 @@
 package org.example.service.book;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.example.model.book.Book;
 import org.example.model.validator.Notification;
 import org.example.repository.book.BookRepository;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -59,5 +63,61 @@ public class BookServiceImpl implements BookService {
         LocalDate now = LocalDate.now();
 
         return (int) ChronoUnit.YEARS.between(book.getPublishedDate(), now);
+    }
+
+    @Override
+    public Notification<Book> update(Book book) {
+        return bookRepository.updateBook(book);
+    }
+
+    @Override
+    public Notification<Book> delete(Long id) {
+        return bookRepository.deleteBook(id);
+    }
+
+    @Override
+    public Notification<Book> sellBook(Long userId, Long bookId, Integer bookQuantity) {
+        Notification<Book> decrementBookNotification = decrementByAmount(bookId, bookQuantity);
+        if(!decrementBookNotification.hasErrors()){
+            Notification<Boolean> updateEmployeeActivityNotification = bookRepository.updateEmployeeActivity(userId, bookId, bookQuantity);
+            if(updateEmployeeActivityNotification.hasErrors()) {
+                decrementBookNotification.addError(updateEmployeeActivityNotification.getFormattedErrors());
+            }
+        }
+        else{
+            decrementBookNotification.addError("Cannot update employee activity! (decrement error)");
+        }
+        return decrementBookNotification;
+    }
+
+    @Override
+    public Notification<String> generateEmployeeReport(Long userId) {
+        String employeeReportName = "employee" + userId + "Report.pdf";
+        Notification<String> employeeReportNotification = new Notification<>();
+        Notification<List<String>> reportNotification = bookRepository.getEmployeeReport(userId);
+        if(!reportNotification.hasErrors()){
+            try {
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(employeeReportName));
+
+                document.open();
+                Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, BaseColor.BLACK);
+
+                for(String s : reportNotification.getResult()) {
+                    Paragraph paragraph = new Paragraph(s, font);
+                    document.add(paragraph);
+                }
+
+                document.close();
+
+                employeeReportNotification.setResult(employeeReportName);
+            } catch (DocumentException | FileNotFoundException e) {
+                employeeReportNotification.addError(e.toString());
+            }
+        }
+        else{
+            employeeReportNotification.addError(reportNotification.getFormattedErrors());
+        }
+        return employeeReportNotification;
     }
 }

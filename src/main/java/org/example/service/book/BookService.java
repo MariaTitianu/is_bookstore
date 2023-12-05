@@ -16,4 +16,12 @@ public interface BookService {
     boolean save(Book book);
 
     int getAgeOfBook(Long id);
+
+    Notification<Book> sellBook(Long userId, Long bookId, Integer bookQuantity);
+
+    Notification<Book> update(Book book);
+
+    Notification<Book> delete(Long id);
+
+    Notification<String> generateEmployeeReport(Long userId);
 }

@@ -4,6 +4,7 @@ import org.example.model.book.Book;
 import org.example.model.builder.BookBuilder;
 import org.example.model.validator.Notification;
 
+import java.rmi.NoSuchObjectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,7 @@ public class BookRepositoryMySQL implements BookRepository {
 
     @Override
     public boolean save(Book book) {
-        String sql = "INSERT INTO Book VALUES(null, ?, ?, ?);";
+        String sql = "INSERT INTO Book VALUES(null, ?, ?, ?, ?);";
         PreparedStatement preparedStatement;
 
         try{
@@ -90,6 +91,7 @@ public class BookRepositoryMySQL implements BookRepository {
             preparedStatement.setString(1, book.getAuthor());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setDate(3,java.sql.Date.valueOf(book.getPublishedDate()));
+            preparedStatement.setInt(4, book.getQuantity());
             preparedStatement.execute();
 
             return true;
@@ -133,6 +135,83 @@ public class BookRepositoryMySQL implements BookRepository {
         }
 
         return notifyBook;
+    }
+
+    @Override
+    public Notification<Book> deleteBook(Long id) {
+        Notification<Book> notifyBook = new Notification<>();
+        String sql = "DELETE FROM book WHERE id = ?";
+        PreparedStatement preparedStatement;
+
+        try{
+            Optional<Book> bookOptional = findById(id);
+            if(bookOptional.isPresent()){
+                notifyBook.setResult(bookOptional.get());
+            }
+            else{
+                throw new NoSuchObjectException("Cartea cu id-ul " + id + " nu exista!");
+            }
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            preparedStatement.execute();
+        } catch (SQLException | NoSuchObjectException e){
+            notifyBook.addError(e.toString());
+        }
+
+        return notifyBook;
+    }
+
+    @Override
+    public Notification<Boolean> updateEmployeeActivity(Long userId, Long bookId, Integer bookQuantity) {
+        Notification<Boolean> updateEmployeeActivityNotification = new Notification<>();
+        String sql = "INSERT INTO employee_sales(id_employee, id_book, quantity) VALUE (?, ?, ?)";
+        PreparedStatement preparedStatement;
+
+        try{
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, Math.toIntExact(userId));
+            preparedStatement.setInt(2, Math.toIntExact(bookId));
+            preparedStatement.setInt(3, bookQuantity);
+            preparedStatement.execute();
+        } catch (SQLException e){
+            updateEmployeeActivityNotification.addError(e.toString());
+        }
+
+        return updateEmployeeActivityNotification;
+    }
+
+    @Override
+    public Notification<List<String>> getEmployeeReport(Long id) {
+        Notification<List<String>> reportNotification = new Notification<>();
+        List<String> report = new ArrayList<>();
+        report.add("Employee " + id + " report: ");
+        String getEmployeeReportSql = "SELECT u.username, es.quantity, b.* FROM user u\n" +
+                "JOIN employee_sales es on u.id = es.id_employee\n" +
+                "JOIN book b on b.id = es.id_book\n" +
+                "WHERE u.id = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(getEmployeeReportSql);
+
+            statement.setInt(1, Math.toIntExact(id));
+
+            ResultSet employeeReportResultSet = statement.executeQuery();
+            while(employeeReportResultSet.next()){
+                report.add("Employee username: " + employeeReportResultSet.getString(1)
+                        + ", books sold: " + employeeReportResultSet.getInt(2)
+                        + ", book id: " + employeeReportResultSet.getInt(3)
+                        + ", book author: " + employeeReportResultSet.getString(4)
+                        + ", book title: " + employeeReportResultSet.getString(5)
+                        + ", book published date: " + employeeReportResultSet.getDate(6)
+                        + ", book remaining quantity: " + employeeReportResultSet.getInt(7));
+            }
+            reportNotification.setResult(report);
+
+        } catch (SQLException e) {
+            reportNotification.addError(e.toString());
+        }
+        return reportNotification;
     }
 
     private Book getBookFromResultSet(ResultSet resultSet) throws SQLException {

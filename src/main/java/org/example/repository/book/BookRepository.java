@@ -16,4 +16,10 @@ public interface BookRepository {
     void removeAll();
 
     Notification<Book> updateBook(Book book);
+
+    Notification<Book> deleteBook(Long id);
+
+    Notification<Boolean> updateEmployeeActivity(Long userId, Long bookId, Integer bookQuantity);
+
+    Notification<List<String>> getEmployeeReport(Long id);
 }

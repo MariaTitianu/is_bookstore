@@ -40,4 +40,19 @@ public class BookRepositoryMock implements BookRepository {
     public Notification<Book> updateBook(Book book) {
         return null;
     }
+
+    @Override
+    public Notification<Book> deleteBook(Long id) {
+        return null;
+    }
+
+    @Override
+    public Notification<Boolean> updateEmployeeActivity(Long userId, Long bookId, Integer bookQuantity) {
+        return null;
+    }
+
+    @Override
+    public Notification<List<String>> getEmployeeReport(Long id) {
+        return null;
+    }
 }

@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
 
-import static org.example.database.Constants.Roles.CUSTOMER;
+import static org.example.database.Constants.Roles.*;
 
 public class AuthenticationServiceMySQL implements AuthenticationService {
 
@@ -25,9 +25,15 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
-    public Notification<Boolean> register(String username, String password) {
-
-        Role customerRole = rightsRolesRepository.findRoleByTitle(CUSTOMER);
+    public Notification<Boolean> register(String username, String password, String role) {
+        Role customerRole;
+        if (role.equals(EMPLOYEE)) {
+            customerRole = rightsRolesRepository.findRoleByTitle(EMPLOYEE);
+        } else if (role.equals(ADMINISTRATOR)) {
+            customerRole = rightsRolesRepository.findRoleByTitle(ADMINISTRATOR);
+        } else {
+            customerRole = rightsRolesRepository.findRoleByTitle(CUSTOMER);
+        }
 
         User user = new UserBuilder()
                 .setUsername(username)
@@ -40,7 +46,7 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
         boolean userValid = userValidator.validate();
         Notification<Boolean> userRegisterNotification = new Notification<>();
 
-        if (!userValid){
+        if (!userValid) {
             userValidator.getErrors().forEach(userRegisterNotification::addError);
             userRegisterNotification.setResult(Boolean.FALSE);
         } else {
@@ -61,7 +67,7 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
         return false;
     }
 
-    private String hashPassword(String password) {
+    public String hashPassword(String password) {
         try {
             // Sercured Hash Algorithm - 256
             // 1 byte = 8 biți
